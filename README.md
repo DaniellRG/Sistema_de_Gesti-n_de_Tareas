@@ -1,4 +1,18 @@
-para que funcione
+# Sistema de Gestión de Tareas
+
+Este proyecto es una aplicación web de gestión de tareas que permite a los usuarios organizar y dar seguimiento a sus actividades diarias. Los usuarios pueden crear, editar, eliminar y marcar tareas como completadas, así como filtrarlas por prioridad y estado.
+
+## Tecnologías Utilizadas
+
+- PHP 7.4+
+- MySQL 5.7+
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- Bootstrap 5
+- XAMPP (como entorno de desarrollo local)
+
+# para que funcione
 
 Instalar XAMPP:
 
@@ -45,7 +59,7 @@ Solución de problemas comunes:
 - Si ves errores de PHP, asegúrate de que Apache y MySQL estén funcionando en XAMPP
 - Si tienes problemas de conexión a la base de datos, revisa el archivo de configuración de la base de datos en el proyecto
 
-Nota
+# Nota
 
 - Si quiere ingresar enseguida al gestion de tarea ingrese
 - daniel234@gmail.com
