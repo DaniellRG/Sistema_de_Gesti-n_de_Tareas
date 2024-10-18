@@ -4,8 +4,8 @@ Este proyecto es una aplicación web de gestión de tareas que permite a los usu
 
 ## Tecnologías Utilizadas
 
-- PHP 7.4+
-- MySQL 5.7+
+- PHP 
+- MySQL 
 - HTML5
 - CSS3
 - JavaScript (ES6+)
