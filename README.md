@@ -44,3 +44,9 @@ Solución de problemas comunes:
 - Si ves un error 404, verifica que los archivos estén en la carpeta correcta
 - Si ves errores de PHP, asegúrate de que Apache y MySQL estén funcionando en XAMPP
 - Si tienes problemas de conexión a la base de datos, revisa el archivo de configuración de la base de datos en el proyecto
+
+Nota
+
+- Si quiere ingresar enseguida al gestion de tarea ingrese
+- daniel234@gmail.com
+- Contraseña: 123456
