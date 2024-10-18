@@ -64,3 +64,11 @@ Solución de problemas comunes:
 - Si quiere ingresar enseguida al gestion de tarea ingrese
 - daniel234@gmail.com
 - Contraseña: 123456
+
+## Capturas de pantalla
+
+![Dashboard](screenshots/XAMPP.png)
+![Página login](screenshots/MySQL.png)
+![Página login](screenshots/inicio.png)
+![Página login](screenshots/login.png)
+![Página login](screenshots/Dashboard.png)
