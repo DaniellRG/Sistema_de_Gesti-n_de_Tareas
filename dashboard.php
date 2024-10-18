@@ -27,6 +27,7 @@ $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
 $sql = "SELECT * FROM tasks WHERE user_id = ?";
 $params = [$_SESSION['user_id']];
 
+// Aplicar filtros si están establecidos
 if ($priority_filter) {
     $sql .= " AND priority = ?";
     $params[] = $priority_filter;
@@ -41,17 +42,20 @@ if ($status_filter) {
 $sql .= " ORDER BY ";
 switch ($sort) {
     case 'priority':
+        // Ordenar por prioridad: alta > media > baja
         $sql .= "FIELD(priority, 'alta', 'media', 'baja')";
         break;
     case 'status':
-        $sql .= "FIELD(status, 'pendiente', 'completada')";
+        // Ordenar por estado: pendiente > en progreso > completada
+        $sql .= "FIELD(status, 'pendiente', 'en progreso', 'completada')";
         break;
     default:
+        // Por defecto, ordenar por fecha de creación
         $sql .= "created_at";
 }
 $sql .= " $order";
 
-// Obtener las tareas del usuario con filtros y orden aplicados
+// Ejecutar la consulta y obtener las tareas
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $tasks = $stmt->fetchAll();
@@ -79,6 +83,8 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Dashboard de Tareas</h1>
+        
+        <!-- Botones de acción principal -->
         <div class="row mb-3">
             <div class="col-md-6">
                 <a href="add_task.php" class="btn btn-primary">Añadir Nueva Tarea</a>
@@ -87,6 +93,8 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
                 <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
             </div>
         </div>
+        
+        <!-- Formulario de filtros -->
         <div class="row mb-3">
             <div class="col-md-12">
                 <form action="" method="get" class="d-flex">
@@ -99,6 +107,7 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
                     <select name="status" class="form-select me-2">
                         <option value="">Todos los estados</option>
                         <option value="pendiente" <?= $status_filter == 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
+                        <option value="en progreso" <?= $status_filter == 'en progreso' ? 'selected' : '' ?>>En progreso</option>
                         <option value="completada" <?= $status_filter == 'completada' ? 'selected' : '' ?>>Completada</option>
                     </select>
                     <button type="submit" class="btn btn-secondary">Filtrar</button>
@@ -106,6 +115,7 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
             </div>
         </div>
         
+        <!-- Enlaces de ordenamiento -->
         <div class="mb-3">
             <strong>Ordenar por:</strong>
             <?= sortLink('created_at', 'Fecha', $sort, $order) ?>
@@ -113,6 +123,7 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
             <?= sortLink('status', 'Estado', $sort, $order) ?>
         </div>
         
+        <!-- Lista de tareas -->
         <div class="row">
             <?php if (empty($tasks)): ?>
                 <div class="col-12">
@@ -132,7 +143,7 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
                                 <p class="card-text"><strong>Creada:</strong> <?= htmlspecialchars($task['created_at']) ?></p>
                                 <a href="edit_task.php?id=<?= $task['id'] ?>" class="btn btn-sm btn-warning">Editar</a>
                                 <a href="dashboard.php?delete=<?= $task['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar esta tarea?')">Eliminar</a>
-                                <?php if ($task['status'] == 'pendiente'): ?>
+                                <?php if ($task['status'] != 'completada'): ?>
                                     <button class="btn btn-sm btn-success mark-complete" data-task-id="<?= $task['id'] ?>">Marcar como completada</button>
                                 <?php endif; ?>
                             </div>
@@ -146,12 +157,14 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Seleccionar todos los botones de "Marcar como completada"
         const markCompleteButtons = document.querySelectorAll('.mark-complete');
         
         markCompleteButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const taskId = this.getAttribute('data-task-id');
                 
+                // Enviar solicitud AJAX para actualizar el estado de la tarea
                 fetch('update_task_status.php', {
                     method: 'POST',
                     headers: {
@@ -162,9 +175,10 @@ function sortLink($field, $label, $currentSort, $currentOrder) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        // Actualizar la interfaz de usuario
                         const statusSpan = document.getElementById(`status-${taskId}`);
                         statusSpan.textContent = 'completada';
-                        this.remove();
+                        this.remove(); // Eliminar el botón después de completar
                     } else {
                         alert('Error al actualizar el estado de la tarea');
                     }
