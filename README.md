@@ -57,11 +57,15 @@ Este proyecto es una aplicación web de gestión de tareas que permite a los usu
 
 ## Capturas de pantalla
 
-![Dashboard](screenshots/XAMPP.png)
-![Página login](screenshots/MySQL.png)
-![Página login](screenshots/inicio.png)
-![Página login](screenshots/login.png)
-![Página login](screenshots/Dashboard.png)
+![XAMPP](screenshots/XAMPP.png)
+![MySQL](screenshots/MySQL.png)
+![Inicio](screenshots/inicio.png)
+![Login](screenshots/login.png)
+![Dashboard](screenshots/Dashboard.png)
+
+## Demostración
+
+![Gif](Demo/video.gif)
 
 ## Licencia
 
