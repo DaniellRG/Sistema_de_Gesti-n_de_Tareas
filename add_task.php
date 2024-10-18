@@ -8,10 +8,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$error = '';
-$success = '';
-
-// Procesar el formulario de añadir tarea
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
@@ -19,37 +15,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = $_POST['status'];
     $user_id = $_SESSION['user_id'];
 
-    // Validar los datos de entrada
-    if (empty($title) || empty($priority) || empty($status)) {
-        $error = 'Por favor, completa todos los campos requeridos.';
+    $stmt = $pdo->prepare("INSERT INTO tasks (title, description, priority, status, user_id) VALUES (?, ?, ?, ?, ?)");
+    if ($stmt->execute([$title, $description, $priority, $status, $user_id])) {
+        header("Location: dashboard.php");
+        exit();
     } else {
-        // Insertar la nueva tarea en la base de datos
-        $stmt = $pdo->prepare("INSERT INTO tasks (user_id, title, description, priority, status) VALUES (?, ?, ?, ?, ?)");
-        if ($stmt->execute([$user_id, $title, $description, $priority, $status])) {
-            $success = 'Tarea añadida con éxito.';
-        } else {
-            $error = 'Error al añadir la tarea. Por favor, intenta de nuevo.';
-        }
+        $error = "Error al crear la tarea";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Añadir Tarea - Sistema de Gestión de Tareas</title>
+    <title>Añadir Nueva Tarea - Sistema de Gestión de Tareas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Añadir Nueva Tarea</h1>
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo $error; ?></div>
+        
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= $error ?></div>
         <?php endif; ?>
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?php echo $success; ?></div>
-        <?php endif; ?>
+
         <form method="post">
             <div class="mb-3">
                 <label for="title" class="form-label">Título</label>
@@ -71,13 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="status" class="form-label">Estado</label>
                 <select class="form-select" id="status" name="status" required>
                     <option value="pendiente">Pendiente</option>
-                    <option value="en progreso">En Progreso</option>
                     <option value="completada">Completada</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Añadir Tarea</button>
-            <a href="dashboard.php" class="btn btn-secondary">Volver al Dashboard</a>
+            <button type="submit" class="btn btn-primary">Crear Tarea</button>
+            <a href="dashboard.php" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
